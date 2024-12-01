@@ -550,6 +550,59 @@ public class MessageServer {
                                 System.out.println("CLIENT MESSAGE RETRIEVAL ERROR");
                                 clientSocket.close();
                             }
+                        } else if (incomingMessage.startsWith("SERVER RETRIEVE NOTIFICATIONS TO")) {
+                            messageArray = incomingMessage.split(" ");
+                                if (messageArray.length > 4) {
+                                    username = messageArray[4].trim();
+                                    if (userExists(username)) {
+                                        User tempUser = users.get(username);
+                                        if (isUserLoggedIn(tempUser)) {
+                                            writer.println("CLIENT VALID SENDING NOTIFICATIONS");
+                                            System.out.println("CLIENT VALID SENDING NOTIFICATIONS");
+                                            incomingMessage = reader.readLine();
+                                            if (incomingMessage.startsWith("SERVER NOTIFICATION RETRIEVAL CONTINUE")) {
+                                                while (incomingMessage.startsWith("SERVER NOTIFICATION RETRIEVAL CONTINUE")) {
+                                                    Notification notif = tempUser.retrieveNotification();
+                                                    if (notif != null) {
+                                                        String encodedBody = Base64.getEncoder().encodeToString(notif.getText().getBytes());
+                                                        
+                                                        writer.println("CLIENT NOTIFICATION " + notif.getType() + " " + encodedBody);
+                                                        System.out.println("CLIENT NOTIFICATION " + notif.getType() + " " + encodedBody);
+
+                                                        incomingMessage = reader.readLine();
+                                                        if (!incomingMessage.startsWith("SERVER NOTIFICATION RETRIEVAL CONTINUE")){
+                                                            System.out.println("NO CONTINUE");
+                                                            break;
+                                                        } else {
+                                                            System.out.println(incomingMessage);
+                                                        }
+                                                    } else {
+                                                        writer.println("CLIENT NOTIFICATION RETRIEVAL DONE");
+                                                        System.out.println("CLIENT NOTIFICATION RETRIEVAL DONE");
+                                                        clientSocket.close();
+                                                        break;
+                                                    }
+                                                }
+                                            } else {
+                                                writer.println("CLIENT NOTIFICATION RETRIEVAL ERROR");
+                                                System.out.println("CLIENT NOTIFICATION RETRIEVAL ERROR");
+                                                clientSocket.close();
+                                            }
+                                        } else {
+                                            writer.println("CLIENT NOTIFICATION RETRIEVAL ERROR");
+                                            System.out.println("CLIENT NOTIFICATION RETRIEVAL ERROR");
+                                            clientSocket.close();
+                                        }
+                                    } else {
+                                        writer.println("CLIENT NOTIFICATION RETRIEVAL ERROR");
+                                        System.out.println("CLIENT NOTIFICATION RETRIEVAL ERROR");
+                                        clientSocket.close();
+                                    }
+                                } else {
+                                    writer.println("CLIENT NOTIFICATION RETRIEVAL ERROR");
+                                    System.out.println("CLIENT NOTIFICATION RETRIEVAL ERROR");
+                                    clientSocket.close();
+                                }
                         } else if (incomingMessage.startsWith("SERVER ADMIN")) {
                             if (incomingMessage.equals("SERVER ADMIN SHUTDOWN")) {
                                 serverOn = false;

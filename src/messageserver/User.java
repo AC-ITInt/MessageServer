@@ -47,7 +47,7 @@ public class User {
                  PrintWriter clientWriter = new PrintWriter(clientSocket.getOutputStream(), true)) {
 
                 // Send the notification
-                clientWriter.println("NOTIFICATION: " + notif.getText());
+                clientWriter.println("NOTIFICATION " + notif.getType() + " " + notif.getText());
                 return true;
 
             } catch (Exception e) {
@@ -125,5 +125,9 @@ public class User {
     
     public Message retrievePublicMessage() {
         return messageQueue.poll();
+    }
+    
+    public Notification retrieveNotification() {
+        return notificationQueue.poll();
     }
 }

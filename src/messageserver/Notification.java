@@ -22,4 +22,8 @@ public class Notification {
         return this.text;
     }
     
+    public int getType() {
+        return this.type;
+    }
+    
 }
