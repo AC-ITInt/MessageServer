@@ -111,7 +111,7 @@ public class MessageServer {
                                         if (messageArray.length > 3) { 
                                             username = messageArray[2];
                                             pass = messageArray[3].toCharArray();
-                                            IP = clientSocket.getInetAddress().toString();
+                                            IP = clientSocket.getInetAddress().toString().replace("/", "");
                                             if (loginUser(username, pass, IP)) {
                                                 writer.println("CLIENT VALID LOGGED IN");
                                                 System.out.println("CLIENT VALID LOGGED IN");
@@ -682,15 +682,15 @@ public class MessageServer {
             
             
             //For Testing Purposes
-            user1.follow(username);
-            user2.follow(username);
-            newUser.follow(user1.screenName);
-            newUser.follow(user2.screenName);
-            
-            newUser.addFollower(user1.screenName);
-            newUser.addFollower(user2.screenName);
-            user1.addFollower(username);
-            user2.addFollower(username);
+//            user1.follow(username);
+//            user2.follow(username);
+//            newUser.follow(user1.screenName);
+//            newUser.follow(user2.screenName);
+//            
+//            newUser.addFollower(user1.screenName);
+//            newUser.addFollower(user2.screenName);
+//            user1.addFollower(username);
+//            user2.addFollower(username);
             
 //            Set<String> tags = new HashSet<>();
 //            

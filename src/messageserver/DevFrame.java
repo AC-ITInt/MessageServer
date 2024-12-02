@@ -60,7 +60,7 @@ public class DevFrame extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         User tempUser = MessageServer.getUser("test");
-        Notification notif = new Notification(0, "TEST TEST NOTIFICATION TEST");
+        Notification notif = new Notification(3, "TEST TEST NOTIFICATION TEST");
         tempUser.notify(notif);
     }//GEN-LAST:event_jButton1ActionPerformed
 
