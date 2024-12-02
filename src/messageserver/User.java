@@ -130,4 +130,8 @@ public class User {
     public Notification retrieveNotification() {
         return notificationQueue.poll();
     }
+    
+    public String getIP() {
+        return IPAddress;
+    }
 }

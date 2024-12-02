@@ -603,6 +603,32 @@ public class MessageServer {
                                     System.out.println("CLIENT NOTIFICATION RETRIEVAL ERROR");
                                     clientSocket.close();
                                 }
+                        } else if (incomingMessage.startsWith("SERVER GET PMINFO FOR")) {
+                            messageArray = incomingMessage.split(" ");
+                                if (messageArray.length > 4) {
+                                    username = messageArray[4].trim();
+                                    if (userExists(username)) {
+                                        User tempUser = users.get(username);
+                                        IP = tempUser.getIP();
+                                        if (isUserLoggedIn(tempUser)) {
+                                            writer.println("CLIENT VALID " + username + " ACTIVE " + IP);
+                                            System.out.println("CLIENT VALID " + username + " ACTIVE " + IP);
+                                            clientSocket.close();
+                                        } else {
+                                            writer.println("CLIENT VALID " + username + " INACTIVE");
+                                            System.out.println("CLIENT VALID " + username + " INACTIVE");
+                                            clientSocket.close();
+                                        }
+                                    } else {
+                                        writer.println("CLIENT INVALID");
+                                        System.out.println("CLIENT INVALID");
+                                        clientSocket.close();
+                                    }
+                                } else {
+                                    writer.println("CLIENT INVALID");
+                                    System.out.println("CLIENT INVALID");
+                                    clientSocket.close();
+                                }
                         } else if (incomingMessage.startsWith("SERVER ADMIN")) {
                             if (incomingMessage.equals("SERVER ADMIN SHUTDOWN")) {
                                 serverOn = false;
