@@ -113,8 +113,8 @@ public class MessageServer {
                                             pass = messageArray[3].toCharArray();
                                             IP = clientSocket.getInetAddress().toString().replace("/", "");
                                             if (loginUser(username, pass, IP)) {
-                                                writer.println("CLIENT VALID LOGGED IN");
-                                                System.out.println("CLIENT VALID LOGGED IN");
+                                                writer.println("CLIENT VALID LOGGED IN " + IP);
+                                                System.out.println("CLIENT VALID LOGGED IN " + IP);
                                                 clientSocket.close();
                                             } else {
                                                 writer.println("CLIENT LOGIN INVALID");
@@ -173,8 +173,8 @@ public class MessageServer {
                                             pass = messageArray[3].toCharArray();
                                             IP = clientSocket.getInetAddress().toString().replace("/", "");
                                             if (registerUser(username, pass, IP)) {
-                                                writer.println("CLIENT VALID LOGGED IN");
-                                                System.out.println("CLIENT VALID LOGGED IN");
+                                                writer.println("CLIENT VALID LOGGED IN " + IP);
+                                                System.out.println("CLIENT VALID LOGGED IN " + IP);
                                                 clientSocket.close();
                                             } else {
                                                 writer.println("CLIENT REGISTER INVALID");
