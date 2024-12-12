@@ -71,9 +71,6 @@ public class MessageServer {
         user3.addFollower("Joe");
         user3.addFollower("Sally");
         
-        DevFrame devFrame = new DevFrame();
-        devFrame.setVisible(true);
-        
         
         try {
             ServerSocket serverSocket = new ServerSocket(2624);
@@ -449,9 +446,9 @@ public class MessageServer {
                                                 while (incomingMessage.startsWith("SERVER MESSAGE RETRIEVAL CONTINUE")) {
                                                     Message msg = tempUser.retrievePublicMessage();
                                                     if (msg != null) {
-                                                        String encodedBody = Base64.getEncoder().encodeToString(msg.body.getBytes());
+                                                        String encodedBody = Base64.getEncoder().encodeToString(msg.getBody().getBytes());
                                                         StringBuilder sb = new StringBuilder();
-                                                        for (String tag : msg.tags) {
+                                                        for (String tag : msg.getTags()) {
                                                             if (sb.length() > 0) {
                                                                 sb.append("; ");
                                                             }
@@ -460,8 +457,8 @@ public class MessageServer {
                                                         String joinedTags = sb.toString();
 
                                                         String encodedTags = Base64.getEncoder().encodeToString(joinedTags.getBytes());
-                                                        writer.println("CLIENT MESSAGE " + msg.from + " " + encodedBody + " " + encodedTags);
-                                                        System.out.println("CLIENT MESSAGE " + msg.from + " " + encodedBody + " " + encodedTags);
+                                                        writer.println("CLIENT MESSAGE " + msg.getSender() + " " + encodedBody + " " + encodedTags);
+                                                        System.out.println("CLIENT MESSAGE " + msg.getSender() + " " + encodedBody + " " + encodedTags);
 
                                                         incomingMessage = reader.readLine();
                                                         if (!incomingMessage.startsWith("SERVER MESSAGE RETRIEVAL CONTINUE")){
@@ -516,9 +513,9 @@ public class MessageServer {
                                             for(Long ID : resultIds) {
                                                 Message msg = messageStore.get(ID);
                                                 if (msg != null) {
-                                                    String encodedBody = Base64.getEncoder().encodeToString(msg.body.getBytes());
+                                                    String encodedBody = Base64.getEncoder().encodeToString(msg.getBody().getBytes());
                                                     StringBuilder sb = new StringBuilder();
-                                                    for (String tag : msg.tags) {
+                                                    for (String tag : msg.getTags()) {
                                                         if (sb.length() > 0) {
                                                             sb.append("; ");
                                                         }
@@ -527,8 +524,8 @@ public class MessageServer {
                                                     String joinedTags = sb.toString();
 
                                                     String msgEncodedTags = Base64.getEncoder().encodeToString(joinedTags.getBytes());
-                                                    writer.println("CLIENT MESSAGE " + msg.from + " " + encodedBody + " " + msgEncodedTags);
-                                                    System.out.println("CLIENT MESSAGE " + msg.from + " " + encodedBody + " " + msgEncodedTags);
+                                                    writer.println("CLIENT MESSAGE " + msg.getSender() + " " + encodedBody + " " + msgEncodedTags);
+                                                    System.out.println("CLIENT MESSAGE " + msg.getSender() + " " + encodedBody + " " + msgEncodedTags);
 
                                                     incomingMessage = reader.readLine();
                                                     if (!incomingMessage.startsWith("SERVER MESSAGE RETRIEVAL CONTINUE")){
@@ -605,18 +602,32 @@ public class MessageServer {
                                 }
                         } else if (incomingMessage.startsWith("SERVER GET PMINFO FOR")) {
                             messageArray = incomingMessage.split(" ");
-                                if (messageArray.length > 4) {
+                                if (messageArray.length > 5) {
                                     username = messageArray[4].trim();
-                                    if (userExists(username)) {
-                                        User tempUser = users.get(username);
-                                        IP = tempUser.getIP();
+                                    String requestUser = messageArray[5].trim();
+                                    if (userExists(requestUser)) {
+                                        User tempUser = users.get(requestUser);
                                         if (isUserLoggedIn(tempUser)) {
-                                            writer.println("CLIENT VALID " + username + " ACTIVE " + IP);
-                                            System.out.println("CLIENT VALID " + username + " ACTIVE " + IP);
-                                            clientSocket.close();
+                                            if (userExists(username)) {
+                                                tempUser = users.get(username);
+                                                IP = tempUser.getIP();
+                                                if (isUserLoggedIn(tempUser)) {
+                                                    writer.println("CLIENT VALID " + username + " ACTIVE " + IP);
+                                                    System.out.println("CLIENT VALID " + username + " ACTIVE " + IP);
+                                                    clientSocket.close();
+                                                } else {
+                                                    writer.println("CLIENT VALID " + username + " INACTIVE");
+                                                    System.out.println("CLIENT VALID " + username + " INACTIVE");
+                                                    clientSocket.close();
+                                                }
+                                            } else {
+                                                writer.println("CLIENT INVALID");
+                                                System.out.println("CLIENT INVALID");
+                                                clientSocket.close();
+                                            }
                                         } else {
-                                            writer.println("CLIENT VALID " + username + " INACTIVE");
-                                            System.out.println("CLIENT VALID " + username + " INACTIVE");
+                                            writer.println("CLIENT INVALID");
+                                            System.out.println("CLIENT INVALID");
                                             clientSocket.close();
                                         }
                                     } else {
@@ -758,7 +769,6 @@ public class MessageServer {
         }
         return timestamp + (messageCounter++);
     }
-    
     
     public static User getUser(String username) {
         return users.get(username);

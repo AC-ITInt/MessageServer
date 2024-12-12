@@ -11,17 +11,31 @@ import java.util.Set;
  * @author andre
  */
 public class Message {
-    String from;
-    String[] recipients;
-    String body;
-    Set<String> tags;
-    long ID;
+    private String from;
+    private String body;
+    private Set<String> tags;
+    private long ID;
     
     public Message(String from, String[] recipients, String body, Set<String> tags, long ID) {
         this.from = from;
-        this.recipients = recipients;
         this.body = body;
         this.tags = tags;
         this.ID = ID;
+    }
+    
+    public String getSender() {
+        return from;
+    }
+    
+    public String getBody() {
+        return body;
+    }
+    
+    public Set<String> getTags() {
+        return tags;
+    }
+    
+    public long getID() {
+        return ID;
     }
 }

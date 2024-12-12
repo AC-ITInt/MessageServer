@@ -26,7 +26,6 @@ public class User {
     String IPAddress;
     LinkedList<String> followers;
     LinkedList<String> following;
-    LinkedList<Long> clientMessages;
     Queue<Message> messageQueue;
     Queue<Notification> notificationQueue;
     
@@ -35,7 +34,6 @@ public class User {
         password = pass;
         followers = new LinkedList<>();
         following = new LinkedList<>();
-        clientMessages = new LinkedList<>();
         messageQueue = new LinkedList<>();
         notificationQueue = new LinkedList<>();
     }
@@ -85,8 +83,10 @@ public class User {
     public Boolean addFollower(String username) {
         Boolean isAdded = followers.add(username);
         
+        String notifText = username + " has followed you!";
+        
         if (isAdded) {
-            Notification notif = new Notification(0, "User " + username + " has followed you!");
+            Notification notif = new Notification(-1, notifText);
             this.notify(notif);
         }
         
@@ -115,7 +115,6 @@ public class User {
                 return msg;
             }
         }
-        clientMessages.add(ID);
         return msg;
     }
     
